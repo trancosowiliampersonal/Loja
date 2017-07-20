@@ -1,12 +1,25 @@
+var produtoController = require('../../app/controller/produtoController');
+var validator = require('validator');
+
 module.exports = function(app){
 	app.get('/api/produtos', function(req, res){
+		produtoController.list(function(resp) {
+			res.send(resp);
+		});
+	});
 
-		var result = []; 
-		for (var i = 0; i < 10; i++) {
-			result.push({cd: i, nome: "produto " + i});
-		}
+	app.post('/api/produtos', function(req, res) {
+		var nome = validator.trim(validator.escape(req.body.nome));
+		produtoController.save(nome, function(resp) {
+			res.send(resp);
+		});
+	});
 
-		res.contentType('application/json');
-		res.send(JSON.stringify(result));
+	app.delete('/api/produtos', function(req, res) {
+		var id = validator.trim(validator.escape(req.body.id));
+
+		produtoController.delete(id, function(resp) {
+			res.send(resp);
+		});
 	});
 }
